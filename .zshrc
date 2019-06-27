@@ -155,9 +155,9 @@ SAVEHIST=1000000
 setopt share_history
 
 # zplugがなければgitからclone
-#if [[ ! -d ~/.zplug ]];then
-#    git clone https://github.com/zplug/zplug ~/.zplug
-#fi
+if [[ ! -d ~/.zplug ]];then
+    git clone https://github.com/zplug/zplug ~/.zplug
+fi
 
 # zplugを使う
 source ~/.zplug/init.zsh
