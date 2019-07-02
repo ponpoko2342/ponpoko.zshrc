@@ -1,6 +1,6 @@
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
 # Customize to your needs..
@@ -44,19 +44,13 @@ alias -s py='python'
 alias -s jl='julia'
 alias -s rb='ruby'
 alias -s js='osascript -l JavaScript'
-alias -s html='open'
-alias -s txt='vim'
-alias -s png='open'
 alias -s cc='gcc -o'
 alias -s cpp='gcc -o'
-alias ls='ls -1'
-alias la='ls -aG'
-alias ll='ls -lG'
-alias cpy='cd ~/IT/Python'
-alias vimtutor='vimtutor ja'
-alias sz='source ~/.zshrc'
 function runcpp () { gcc -O2 $1; ./a.out }
 alias -s {c,cpp}=runcpp
+alias -s txt='vim'
+alias -s html='open'
+alias -s png='open'
 function runjava () {
     className=$1
     className=${className%.java}
@@ -75,7 +69,18 @@ function runrust () {
 }
 alias -s rs='runrust'
 
-# vで始まるコマンドはvimでのファイルを開く
+
+# 複数個上にも移動できるようにする
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ls='ls -1'
+alias la='ls -aG'
+alias ll='ls -lG'
+alias vimtutor='vimtutor ja'
+alias sz='source ~/.zshrc'
+
+# vで始まるコマンドはvimでファイルを開く事を示す
 alias v='vim'
 alias vi='vim'
 alias vz='vim ~/.zshrc'
@@ -83,17 +88,19 @@ alias vv='vim ~/.vimrc'
 alias vg='vim ~/.gvimrc'
 alias vzp='vim ~/.zprofile'
 
-# caで始まるコマンドはcargo系のコマンドを行う
+# caで始まるコマンドはcargo系のコマンドを行う事を示す
 alias cab='cargo build'
 alias car='cargo run'
 alias cau='cargo update'
 alias cac='cargo check'
 
+# cで始まるコマンドはcd系のコマンドを行う事を示す
+alias cpy='cd ~/IT/Python'
+
 # アプリ起動コマンド
 # 日本語ネームのアプリは情報を見るから名前を確認
 # oはopenの略
 alias /a='/applications'
-alias oa='open -a Anaconda-Navigator'
 alias od='open -a Discord'
 alias of='open -a Firefox'
 alias og='open -a Google\ Chrome'
@@ -115,7 +122,7 @@ alias ox='open -a Xcode'
 alias -s m3a=afplay
 alias -s m4a=afplay
 
-# おまじない気分 一部のエラーを防止する詳しくはWebで
+# おまじない気分 防止するエラーがあるので一応置いてある詳しくはggr
 alias sudo='sudo'
 
 # cd無しで移動
@@ -133,9 +140,6 @@ bindkey -M menuselect 'l' vi-forward-char
 
 eval "$(pyenv init -)"
 
-# 2つ上、3つ上にも移動できるようにする
-alias ...='cd ../..'
-alias ....='cd ../../..'
 # 日本語ファイル名を表示可能にする
 setopt print_eight_bit
 # '#'以降をコメントとして扱う
@@ -153,6 +157,10 @@ SAVEHIST=1000000
 
 # 他のターミナルで実行したコマンドを使えるようにする
 setopt share_history
+alias aaa='echo $(('
+
+
+# プラグインの設定 -----------------------------------------------------
 
 # zplugがなければgitからclone
 if [[ ! -d ~/.zplug ]];then
@@ -193,25 +201,29 @@ fi
 # コマンドをリンクして, PATHに追加し、プラグインは読み込む
 zplug load
 
+
 # fzfの設定 -------------------------------------------------------------------
+
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # 選択したファイルをvimで開く
 fe() {
-  local files
-  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+    local files
+    IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+    [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
+
 
 # fd 選択したディレクトリに移動
 fd() {
-  local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type d -print 2> /dev/null | fzf +m) &&
-  cd "$dir"
+    local dir
+    dir=$(find ${1:-.} -path '*/\.*' -prune \
+        -o -type d -print 2> /dev/null | fzf +m) &&
+        cd "$dir"
 }
 
-# インタラクティブCD   # wikiよりコピペ
+
+# インタラクティブCD
 function cd() {
     if [[ "$#" != 0 ]]; then
         builtin cd "$@";
@@ -220,18 +232,19 @@ function cd() {
     while true; do
         local lsd=$(echo ".." && ls -p | grep '/$' | sed 's;/$;;')
         local dir="$(printf '%s\n' "${lsd[@]}" |
-            fzf --reverse --preview '
-                __cd_nxt="$(echo {})";
-                __cd_path="$(echo $(pwd)/${__cd_nxt} | sed "s;//;/;")";
-                echo $__cd_path;
-                echo;
-                ls -p --color=always "${__cd_path}";
+        fzf --reverse --preview '
+        __cd_nxt="$(echo {})";
+        __cd_path="$(echo $(pwd)/${__cd_nxt} | sed "s;//;/;")";
+        echo $__cd_path;
+        echo;
+        ls -p --color=always "${__cd_path}";
         ')"
         [[ ${#dir} != 0 ]] || ls -1
         [[ ${#dir} != 0 ]] || return 0
         builtin cd "$dir" &> /dev/null
-done
+    done
 }
+
 # .zshrc が.zshrc.zwc より新しい場合zcomipleを自動で実行
 if [ ~/.zshrc -nt ~/.zshrc.zwc ]; then
     zcompile ~/.zshrc
@@ -243,4 +256,3 @@ echo こんにちはなんだナ!
 #  zprof | less
 #fi
 # End of lines added by compinstall
-
