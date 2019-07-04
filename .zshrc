@@ -6,41 +6,8 @@ fi
 # Customize to your needs..
 
 
-# Lines configured by zsh-newuser-install
-export EDITORP=vim #エディタをvimに設定
-export LANG=ja_JP.UTF-8 #文字コードをUTF-8に設定
+# エイリアス --------------------------------------------------------------------------------------
 
-# SSHで接続した先で日本語が使えるようにする
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-# history
-HISTFILE=~/work/dotfils/zsh/.zsh_hist
-HISTSIZE=1000
-SAVEHIST=1000
-setopt extended_history #ヒストリに実行時間も保存
-setopt hist_ignore_dups #直前と同じコマンドはヒストリに追加しない
-
-# viキーバインド
-bindkey -v
-
-# cdした先のディレクトリをディレクトリスタックに追加
-setopt auto_pushd
-
-# pushdしたとき、ディレクトリがすでにスタックに含まれていればスタックに追加しない
-setopt pushd_ignore_dups
-
-# コマンドのスペルミスを訂正する
-setopt correct
-
-# <Tab>でパス名の補完候補を表示したあと、
-# 続けて<Tab>を押すと候補からパス名を選択することができるようになる
-zstyle ':completion:*:default' menu select=1
-
-autoload colors
-zstyle ':completion:*' list-lolors "${LS_COLORS}"
-
-# エイリアス
 alias -s py='python'
 alias -s jl='julia'
 alias -s rb='ruby'
@@ -97,6 +64,8 @@ alias cac='cargo check'
 
 # cで始まるコマンドはcd系のコマンドを行う事を示す
 alias cpy='cd ~/IT/Python'
+# gで始まるコマンドはGitHub系のコマンドを行うことを示す
+alias ga='git add'
 
 # アプリ起動コマンド
 # 日本語ネームのアプリは情報を見るから名前を確認
@@ -125,6 +94,42 @@ alias -s m4a=afplay
 
 # おまじない気分 防止するエラーがあるので一応置いてある詳しくはggr
 alias sudo='sudo'
+
+# 基本設定 ----------------------------------------------------------------------------------------
+
+# Lines configured by zsh-newuser-install
+export EDITORP=vim #エディタをvimに設定
+export LANG=ja_JP.UTF-8 #文字コードをUTF-8に設定
+
+# SSHで接続した先で日本語が使えるようにする
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# history
+HISTFILE=~/work/dotfils/zsh/.zsh_hist
+HISTSIZE=1000
+SAVEHIST=1000
+setopt extended_history #ヒストリに実行時間も保存
+setopt hist_ignore_dups #直前と同じコマンドはヒストリに追加しない
+
+# viキーバインド
+bindkey -v
+
+# cdした先のディレクトリをディレクトリスタックに追加
+setopt auto_pushd
+
+# pushdしたとき、ディレクトリがすでにスタックに含まれていればスタックに追加しない
+setopt pushd_ignore_dups
+
+# コマンドのスペルミスを訂正する
+setopt correct
+
+# <Tab>でパス名の補完候補を表示したあと、
+# 続けて<Tab>を押すと候補からパス名を選択することができるようになる
+zstyle ':completion:*:default' menu select=1
+
+autoload colors
+zstyle ':completion:*' list-lolors "${LS_COLORS}"
 
 # cd無しで移動
 setopt auto_cd
@@ -155,10 +160,10 @@ setopt hist_ignore_all_dups
 HISTFILE=$HOME/.zsh-history
 HISTSIZE=1000000
 SAVEHIST=1000000
-
 # 他のターミナルで実行したコマンドを使えるようにする
 setopt share_history
-
+# 補完機能強化
+autoload -Uz compinit && compinit
 
 # プラグインの設定 --------------------------------------------------------------------------------
 
@@ -189,7 +194,7 @@ zplug 'mollifier/anyframe'
 zplug 'sorin-ionescu/prezto'
 # git の補完を効かせる
 # 補完&エイリアスが追加される
-zplug 'plugins/git', from:oh-my-zsh
+# zplug 'plugins/git', from:oh-my-zsh
 zplug 'peterhurford/git-aliases.zsh'
 # 自分自身をプラグインとして管理
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
