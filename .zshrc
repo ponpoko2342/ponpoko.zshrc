@@ -1,9 +1,10 @@
 # Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+if [[ -s "~/${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+    source "~/${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
 # Customize to your needs..
+
 
 # Lines configured by zsh-newuser-install
 export EDITORP=vim #エディタをvimに設定
@@ -157,10 +158,9 @@ SAVEHIST=1000000
 
 # 他のターミナルで実行したコマンドを使えるようにする
 setopt share_history
-alias aaa='echo $(('
 
 
-# プラグインの設定 -----------------------------------------------------
+# プラグインの設定 --------------------------------------------------------------------------------
 
 # zplugがなければgitからclone
 if [[ ! -d ~/.zplug ]];then
@@ -185,6 +185,8 @@ zplug 'zsh-users/zsh-history-substring-search', defer:3
 zplug 'motemen/ghq', as:command, from:gh-r
 # fzf でよく使う関数の詰め合わせ
 zplug 'mollifier/anyframe'
+# プロンプト まとめ
+zplug 'sorin-ionescu/prezto'
 # git の補完を効かせる
 # 補完&エイリアスが追加される
 zplug 'plugins/git', from:oh-my-zsh
@@ -199,10 +201,10 @@ if ! zplug check --verbose; then
     fi
 fi
 # コマンドをリンクして, PATHに追加し、プラグインは読み込む
-zplug load
+zplug ~/load
 
 
-# fzfの設定 -------------------------------------------------------------------
+# fzfの設定 ---------------------------------------------------------------------------------------
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
