@@ -65,7 +65,13 @@ alias cac='cargo check'
 # cで始まるコマンドはcd系のコマンドを行う事を示す
 alias cpy='cd ~/IT/Python'
 # gで始まるコマンドはGitHub系のコマンドを行うことを示す
+# プラグインで設定する事も出来今まで行っていた方法によって
+# かなりの遅延が発生していることが分かった為取り敢えずこちらに最低限を設定
+# 遅延が少ないプラグインの方法が見つかればそちらを設定
 alias ga='git add'
+alias gc='git commit -m'
+alias gs='git status'
+alias gp='git push origin master'
 
 # アプリ起動コマンド
 # 日本語ネームのアプリは情報を見るから名前を確認
@@ -194,7 +200,7 @@ zplug 'mollifier/anyframe'
 zplug 'sorin-ionescu/prezto'
 # git の補完を効かせる
 # 補完&エイリアスが追加される
-# zplug 'plugins/git', from:oh-my-zsh
+# エイリアスは自作する
 zplug 'peterhurford/git-aliases.zsh'
 # 自分自身をプラグインとして管理
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
