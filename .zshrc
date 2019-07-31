@@ -1,10 +1,13 @@
-# Source Prezto.
-if [[ -s "~/${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-    source "~/${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
+# Tource Prezto
+#
+# if [[ -s "~/${ ZDOTDIR:-$HOME }/.zprezto/init.zsh" ]]; then
+#   source "~/${ ZDOTDIR:-$HOME }/.zprezto/init.zsh"
+# fi
 
 # Customize to your needs..
 
+
+echo "YUKI.N>みえてる？"
 
 # エイリアス --------------------------------------------------------------------------------------
 
@@ -15,7 +18,7 @@ alias -s js='osascript -l JavaScript'
 alias -s cc='gcc -o'
 alias -s cpp='gcc -o'
 function runcpp () { gcc -O2 $1; ./a.out }
-alias -s {c,cpp}=runcpp
+alias -s c=runcpp
 alias -s txt='vim'
 alias -s html='open'
 alias -s png='open'
@@ -39,24 +42,48 @@ alias -s rs='runrust'
 
 
 # 複数個上にも移動できるようにする
+alias l='ls'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
+alias ,.='~'
+# よく使うl
 alias ls='ls -1'
 alias la='ls -aG'
 alias ll='ls -lG'
+# 日本語にする。
 alias vimtutor='vimtutor ja'
 alias sz='source ~/.zshrc'
 
 # vで始まるコマンドはvimでファイルを開く事を示す
 alias v='vim'
-alias vi='vim'
-alias vz='vim ~/.zshrc'
-alias vv='vim ~/.vimrc'
-alias vg='vim ~/.gvimrc'
-alias vzp='vim ~/.zprofile'
+alias vz='ov ~/zsh/.zshrc'
+alias vv='ov ~/vim/.vimrc'
+alias vg='ov ~/vim/.gvimrc'
+alias vzp='ov ~/.zprofile'
 
 # caで始まるコマンドはcargo系のコマンドを行う事を示す
+function cargo_new () {
+    let cargo_new_num=0
+    until [ $cargo_new_num -eq 1 ]
+    do
+        echo 新しいCargoプロジェクトの名前を入力してください
+        read new_project_name
+        echo $new_project_name 'でよろしいですか？[y/n]'
+        echo qで終了します
+        read name_case
+        case $name_case in
+            y)
+                echo $new_project_name 'を作成します。'
+                $((cargo_new_num++))
+                ;;
+            q)
+                return 2>&- || exit
+        esac
+    done
+    cargo new $new_project_name --bin
+}
+alias can='cargo_new'
 alias cab='cargo build'
 alias car='cargo run'
 alias cau='cargo update'
@@ -64,21 +91,17 @@ alias cac='cargo check'
 
 # cで始まるコマンドはcd系のコマンドを行う事を示す
 alias cpy='cd ~/IT/Python'
-# gで始まるコマンドはGitHub系のコマンドを行うことを示す
-# プラグインで設定する事も出来今まで行っていた方法によって
-# かなりの遅延が発生していることが分かった為取り敢えずこちらに最低限を設定
-# 遅延が少ないプラグインの方法が見つかればそちらを設定
-alias ga='git add'
-alias gc='git commit -m'
-alias gs='git status'
-alias gp='git push origin master'
-
+# gで始まるコマンドでGitHub系のコマンドを行う
+# 詳しくは下記ファイルを参照
+source $HOME/zsh/git.zshrc
 # アプリ起動コマンド
 # 日本語ネームのアプリは情報を見るから名前を確認
 # oはopenの略
 alias /a='/applications'
+alias oa='open -a Amazon\ Music'
 alias od='open -a Discord'
 alias of='open -a Firefox'
+alias ofi='open -a Finder'
 alias og='open -a Google\ Chrome'
 alias ogm='open -a GO\ for\ Gmail'
 alias oi='open -a iTunes'
@@ -91,15 +114,37 @@ alias om='open -a notes'
 alias os='open -a System\ Preferences'
 alias osl='open -a Slack'
 alias ov='open -a MacVim'
-alias ovc='open -a Visual\ Studio\ Code'
+alias ovs='open -a Visual\ Studio\ Code'
 alias ox='open -a Xcode'
+
+
+# 複数アプリ起動 ofで始まるコマンドは基本的に複数開く
+function open_firefox_vim () {
+    open -a Firefox
+    open -a MacVim
+}
+alias ofv='open_firefox_vim'
+function open_Kindle_iTunes () {
+    open -a Kindle
+    open -a iTunes
+}
+alias ofk='open_Kindle_iTunes'
 
 # 遊び
 alias -s m3a=afplay
 alias -s m4a=afplay
 
-# おまじない気分 防止するエラーがあるので一応置いてある詳しくはggr
-alias sudo='sudo'
+# sudo<Space>とするとsudoの後のコマンドがaliasかどうかの判定を行うようになる
+# 'sudo'だけだとaliasかどうかの判定をしてくれない為
+alias sudo='sudo '
+
+function kill_app () {
+    top
+    echo 終了させたいアプリの番号を入力してください
+    read num_kill
+    kill $num_kill
+}
+alias k='kill_app'
 
 # 基本設定 ----------------------------------------------------------------------------------------
 
@@ -107,12 +152,12 @@ alias sudo='sudo'
 export EDITORP=vim #エディタをvimに設定
 export LANG=ja_JP.UTF-8 #文字コードをUTF-8に設定
 
-# SSHで接続した先で日本語が使えるようにする
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+# sshで接続した先で日本語が使えるようにする
+export lc_ctype=en_us.utf-8
+export lc_all=en_us.utf-8
 
 # history
-HISTFILE=~/work/dotfils/zsh/.zsh_hist
+histfile=~/work/dotfils/zsh/.zsh_hist
 HISTSIZE=1000
 SAVEHIST=1000
 setopt extended_history #ヒストリに実行時間も保存
@@ -140,8 +185,8 @@ zstyle ':completion:*' list-lolors "${LS_COLORS}"
 # cd無しで移動
 setopt auto_cd
 # cdの後にlsを実行
-# chpwd() { ls -ltrG  }     # ファイルの編集日時などの詳細情報を表示
 function chpwd() { ls -1 }  # ファイル名のみの簡易的な情報を表示
+# chpwd() { ls -ltrG  }     # ファイルの編集日時などの詳細情報を表示
 
 # 補完候補のメニュー選択で、矢印キーの代わりにhjklで移動出来るようにする。
 zmodload zsh/complist
@@ -173,6 +218,7 @@ autoload -Uz compinit && compinit
 
 # プラグインの設定 --------------------------------------------------------------------------------
 
+#echo "プラグインの設定を始めるのです。"
 # zplugがなければgitからclone
 if [[ ! -d ~/.zplug ]];then
     git clone https://github.com/zplug/zplug ~/.zplug
@@ -200,7 +246,7 @@ zplug 'mollifier/anyframe'
 zplug 'sorin-ionescu/prezto'
 # git の補完を効かせる
 # 補完&エイリアスが追加される
-# エイリアスは自作する
+# エイリアスの設定は遅延が多かった為、最低限を自分で書いているがちゃんとして方法を実装する
 zplug 'peterhurford/git-aliases.zsh'
 # 自分自身をプラグインとして管理
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
@@ -237,6 +283,7 @@ fd() {
 
 
 # インタラクティブCD
+# fdの方が便利
 function cd() {
     if [[ "$#" != 0 ]]; then
         builtin cd "$@";
@@ -259,13 +306,14 @@ function cd() {
 }
 
 # .zshrc が.zshrc.zwc より新しい場合zcomipleを自動で実行
-if [ ~/.zshrc -nt ~/.zshrc.zwc ]; then
-    zcompile ~/.zshrc
+if [ ~/zsh/.zshrc -nt ~/zsh/.zshrc.zwc ]; then
+    zcompile ~/zsh/.zshrc
 fi
-echo こんにちはなんだナ!
 
-# ボトルネックを探りたい時は↓と.zshenv1行目のコメントを外す
-#if type zprof > /dev/null 2>&1; then
-#  zprof | less
-#fi
+echo "YUKI.N>うまく言語化できない。情報の伝達に齟齬が発生するかもしれない。でも。聞いて。"
+
+# ボトルネックを探りたい時は下三行と.zshenv1行目のコメントを外す
+# if type zprof > /dev/null 2>&1; then
+#   zprof | less
+# fi
 # End of lines added by compinstall
