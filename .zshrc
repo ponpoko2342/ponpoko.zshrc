@@ -43,6 +43,7 @@ alias -s rs='runrust'
 
 # 複数個上にも移動できるようにする
 alias l='ls'
+alias .='..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
@@ -220,9 +221,9 @@ autoload -Uz compinit && compinit
 
 #echo "プラグインの設定を始めるのです。"
 # zplugがなければgitからclone
-if [[ ! -d ~/.zplug ]];then
-    git clone https://github.com/zplug/zplug ~/.zplug
-fi
+#if [[ ! -d ~/.zplug ]];then
+#    git clone https://github.com/zplug/zplug ~/.zplug
+#fi
 
 # zplugを使う
 source ~/.zplug/init.zsh
@@ -246,8 +247,8 @@ zplug 'mollifier/anyframe'
 zplug 'sorin-ionescu/prezto'
 # git の補完を効かせる
 # 補完&エイリアスが追加される
-# エイリアスの設定は遅延が多かった為、最低限を自分で書いているがちゃんとして方法を実装する
-zplug 'peterhurford/git-aliases.zsh'
+# エイリアスの設定はローカルに管理している
+zplug 'peterhurford/git-aliases.zsh', lazy:true
 # 自分自身をプラグインとして管理
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 # インストールしてないプラグインはインストール
@@ -265,6 +266,7 @@ zplug ~/load
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_CTRL_C_OPTS="--preview 'tree -C {} | head -200'"
 # 選択したファイルをvimで開く
 fe() {
     local files
@@ -305,6 +307,20 @@ function cd() {
     done
 }
 
+
+# 選択したプロセスをkillする
+fkill() {
+  local pid
+  pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+
+  if [ "x$pid" != "x" ]
+  then
+    echo $pid | xargs kill -${1:-9}
+  fi
+}
+
+# 普遍的設定 --------------------------------------------------------------------------------------
+
 # .zshrc が.zshrc.zwc より新しい場合zcomipleを自動で実行
 if [ ~/zsh/.zshrc -nt ~/zsh/.zshrc.zwc ]; then
     zcompile ~/zsh/.zshrc
@@ -312,7 +328,7 @@ fi
 
 echo "YUKI.N>うまく言語化できない。情報の伝達に齟齬が発生するかもしれない。でも。聞いて。"
 
-# ボトルネックを探りたい時は下三行と.zshenv1行目のコメントを外す
+# ボトルネックを探りたい時は下三行と$HOME/.zshenv1行目のコメントを外す
 # if type zprof > /dev/null 2>&1; then
 #   zprof | less
 # fi
