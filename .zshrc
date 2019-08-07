@@ -219,7 +219,7 @@ autoload -Uz compinit && compinit
 
 # プラグインの設定 --------------------------------------------------------------------------------
 
-#echo "プラグインの設定を始めるのです。"
+echo ""
 # zplugがなければgitからclone
 #if [[ ! -d ~/.zplug ]];then
 #    git clone https://github.com/zplug/zplug ~/.zplug
