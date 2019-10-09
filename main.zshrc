@@ -9,54 +9,7 @@
 
 echo "YUKI.N>みえてる？"
 
-# プラグインの設定 --------------------------------------------------------------------------------
-
-# zplugがなければgithubからclone
-if [[ ! -d ~/.zplug ]];then
-    git clone https://github.com/zplug/zplug ~/.zplug
-fi
-
-# zplugを使う
-source ~/.zplug/init.zsh
-# ここに使いたいプライグインを書いておく
-# zplug "ユーザー名/リポジトリ名", タグ
-
-# 補完強化
-zplug 'zsh-users/zsh-completions'
-# コマンドを種類ごとに色付け
-zplug 'zsh-users/zsh-syntax-highlighting', defer:2
-# fzf 関連のプラグイン
-# 本体（連携前提のパーツ)
-zplug 'junegunn/fzf-bin', as:command, from:gh-r, rename-to:fzf
-#zplug 'junegunn/fzf', as:command, use:bin/fzf-tmux
-# ヒストリの補完を強化する
-zplug 'zsh-users/zsh-history-substring-search', defer:3
-# git のローカルリポジトリを一括管理（fzf でリポジトリへジャンプ）
-zplug 'motemen/ghq', as:command, from:gh-r
-# fzf でよく使う関数の詰め合わせ
-zplug 'mollifier/anyframe'
-# プロンプト まとめ
-zplug 'sorin-ionescu/prezto'
-# git の補完を効かせる
-# 補完&エイリアスが追加される
-# エイリアスの設定はローカルに管理している
-zplug 'peterhurford/git-aliases.zsh', lazy:true
-# 自分自身をプラグインとして管理
-#zplug 'zplug/zplug', hook-build:'zplug --self-manage'
-# インストールしてないプラグインはインストール
-if ! zplug check --verbose; then
-    printf 'Install? [y/N]: '
-    if read -q; then
-        echo; zplug install
-    fi
-fi
-# コマンドをリンクして, PATHに追加し、プラグインは読み込む
-zplug ~/load
-
-echo ""
-
-
-# alias -------------------------------------------------------------------------------------------
+# エイリアス --------------------------------------------------------------------------------------
 
 alias -s py='python'
 alias -s jl='julia'
@@ -146,8 +99,7 @@ source $HOME/IT/zsh/git.zshrc
 # 日本語ネームのアプリは情報を見るから名前を確認
 # oはopenの略
 alias /a='/applications'
-alias oa='open -a Amazon\ Music'
-alias oap='open -a app\ Store'
+alias oam='open -a Amazon\ Music'
 alias od='open -a Discord'
 alias of='open -a Firefox'
 alias ofi='open -a Finder'
@@ -204,7 +156,8 @@ HISTSIZE=1000
 SAVEHIST=1000
 setopt extended_history #ヒストリに実行時間も保存
 setopt hist_ignore_dups #直前と同じコマンドはヒストリに追加しない
-
+# PATHを追加
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 # viキーバインド
 bindkey -v
 
@@ -257,6 +210,54 @@ SAVEHIST=1000000
 setopt share_history
 # 補完機能強化
 autoload -Uz compinit && compinit
+# タイトルバーにカレントディレクトリへのパスを表示する
+precmd() {eval 'echo -ne "\033]0;$PWD\007"'}
+
+
+# プラグインの設定 --------------------------------------------------------------------------------
+
+echo ""
+# zplugがなければgitからclone
+#if [[ ! -d ~/.zplug ]];then
+#    git clone https://github.com/zplug/zplug ~/.zplug
+#fi
+
+# zplugを使う
+source ~/.zplug/init.zsh
+# ここに使いたいプライグインを書いておく
+# zplug "ユーザー名/リポジトリ名", タグ
+# 補完強化
+zplug 'zsh-users/zsh-completions'
+# コマンドを種類ごとに色付け
+zplug 'zsh-users/zsh-syntax-highlighting', defer:2
+# fzf 関連のプラグイン
+# 本体（連携前提のパーツ)
+zplug 'junegunn/fzf-bin', as:command, from:gh-r, rename-to:fzf
+zplug 'junegunn/fzf', as:command, use:bin/fzf-tmux
+# ヒストリの補完を強化する
+zplug 'zsh-users/zsh-history-substring-search', defer:3
+# git のローカルリポジトリを一括管理（fzf でリポジトリへジャンプ）
+zplug 'motemen/ghq', as:command, from:gh-r
+# fzf でよく使う関数の詰め合わせ
+zplug 'mollifier/anyframe'
+# プロンプト まとめ
+zplug 'sorin-ionescu/prezto'
+# git の補完を効かせる
+# 補完&エイリアスが追加される
+# エイリアスの設定はローカルに管理している
+zplug 'peterhurford/git-aliases.zsh', lazy:true
+# 自分自身をプラグインとして管理
+zplug 'zplug/zplug', hook-build:'zplug --self-manage'
+# インストールしてないプラグインはインストール
+if ! zplug check --verbose; then
+    printf 'Install? [y/N]: '
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+# コマンドをリンクして, PATHに追加し、プラグインは読み込む
+zplug ~/load
+
 
 # fzfの設定 ---------------------------------------------------------------------------------------
 
@@ -281,7 +282,7 @@ fd() {
 
 
 # インタラクティブCD
-# fdの方が便利であまり使っていない
+# fdの方が便利
 function cd() {
     if [[ "$#" != 0 ]]; then
         builtin cd "$@";
@@ -314,14 +315,12 @@ fkill() {
     echo $pid | xargs kill -${1:-9}
   fi
 }
-alias fk="[]"fkill
-
 
 # 普遍的設定 --------------------------------------------------------------------------------------
 
 # .zshrc が.zshrc.zwc より新しい場合zcomipleを自動で実行
-if [ ~/IT/zsh/.zshrc -nt ~/IT/zsh/.zshrc.zwc ]; then
-    zcompile ~/IT/zsh/.zshrc
+if [ ~/zsh/.zshrc -nt ~/zsh/.zshrc.zwc ]; then
+    zcompile ~/zsh/.zshrc
 fi
 
 echo "YUKI.N>うまく言語化できない。情報の伝達に齟齬が発生するかもしれない。でも。聞いて。"
