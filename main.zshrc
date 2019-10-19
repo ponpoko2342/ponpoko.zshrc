@@ -7,7 +7,7 @@
 # Customize to your needs..
 
 
-echo "YUKI.N>みえてる？"
+echo "YUKI. N>みえてる？"
 
 # エイリアス --------------------------------------------------------------------------------------
 
@@ -67,21 +67,19 @@ alias vzp='ov ~/.zprofile'
 function cargo_new () {
     let cargo_new_num=0
     until [ $cargo_new_num -eq 1 ]
-    do
-        echo 新しいCargoプロジェクトの名前を入力してください
-        read new_project_name
-        echo $new_project_name 'でよろしいですか？[y/n]'
-        echo qで終了します
-        read name_case
-        case $name_case in
-            y)
-                echo $new_project_name 'を作成します。'
-                $((cargo_new_num++))
-                ;;
-            q)
-                return 2>&- || exit
+    echo 新しいCargoプロジェクトの名前を入力してください
+    read new_project_name
+    echo $new_project_name 'でよろしいですか？[y/n]'
+    echo 'qで終了します'
+    read name_case
+    case $name_case in
+    y)
+    echo $new_project_name 'を作成します。'
+    $((cargo_new_num++))
+    ;;
+    q)
+        return 2>&- || exit
         esac
-    done
     cargo new $new_project_name --bin
 }
 alias can='cargo_new'
@@ -89,6 +87,8 @@ alias cab='cargo build'
 alias car='cargo run'
 alias cau='cargo update'
 alias cac='cargo check'
+
+alias do='docker'
 
 # cで始まるコマンドはcd系のコマンドを行う事を示す
 alias cpy='cd ~/IT/Python'
@@ -101,11 +101,12 @@ source $HOME/IT/zsh/git.zshrc
 alias /a='/applications'
 alias oam='open -a Amazon\ Music'
 alias od='open -a Discord'
+alias odo='open -a Docker'
 alias of='open -a Firefox'
 alias ofi='open -a Finder'
 alias og='open -a Google\ Chrome'
 alias ogm='open -a GO\ for\ Gmail'
-alias oi='open -a iTunes'
+alias oi='open -a Music'
 alias ok='open -a Keyboard\ Maestro'
 alias oke='open -a Karabiner-Elements'
 alias oki='open -a Kindle'
@@ -114,6 +115,7 @@ alias oli='open -a LINE'
 alias om='open -a notes'
 alias os='open -a System\ Preferences'
 alias osl='open -a Slack'
+alias ot='open -a Twitter'
 alias ov='open -a MacVim'
 alias ovs='open -a Visual\ Studio\ Code'
 alias ox='open -a Xcode'
@@ -219,12 +221,13 @@ precmd() {eval 'echo -ne "\033]0;$PWD\007"'}
 
 echo ""
 # zplugがなければgitからclone
-#if [[ ! -d ~/.zplug ]];then
-#    git clone https://github.com/zplug/zplug ~/.zplug
-#fi
+if [[ ! -d ~/.zplug ]];then
+    git clone https://github.com/zplug/zplug ~/.zplug
+fi
 
 # zplugを使う
 source ~/.zplug/init.zsh
+
 # ここに使いたいプライグインを書いておく
 # zplug "ユーザー名/リポジトリ名", タグ
 # 補完強化
@@ -284,6 +287,7 @@ fd() {
 
 # インタラクティブCD
 # fdの方が便利
+
 function cd() {
     if [[ "$#" != 0 ]]; then
         builtin cd "$@";
@@ -292,19 +296,18 @@ function cd() {
     while true; do
         local lsd=$(echo ".." && ls -p | grep '/$' | sed 's;/$;;')
         local dir="$(printf '%s\n' "${lsd[@]}" |
-        fzf --reverse --preview '
-        __cd_nxt="$(echo {})";
-        __cd_path="$(echo $(pwd)/${__cd_nxt} | sed "s;//;/;")";
-        echo $__cd_path;
-        echo;
-        ls -p --color=always "${__cd_path}";
+            fzf --reverse --preview '
+                __cd_nxt="$(echo {})";
+                __cd_path="$(echo $(pwd)/${__cd_nxt} | sed "s;//;/;")";
+                echo $__cd_path;
+                echo;
+                ls -p --color=always "${__cd_path}";
         ')"
-        [[ ${#dir} != 0 ]] || ls -1
         [[ ${#dir} != 0 ]] || return 0
         builtin cd "$dir" &> /dev/null
-    done
 }
 
+#        [[ ${#dir} != 0 ]] || ls -1
 
 # 選択したプロセスをkillする
 fkill() {
@@ -324,7 +327,7 @@ if [ ~/zsh/.zshrc -nt ~/zsh/.zshrc.zwc ]; then
     zcompile ~/zsh/.zshrc
 fi
 
-echo "YUKI.N>うまく言語化できない。情報の伝達に齟齬が発生するかもしれない。でも。聞いて。"
+echo "YUKI. N>うまく言語化できない。情報の伝達に齟齬が発生するかもしれない。でも。聞いて。"
 
 # ボトルネックを探りたい時は下三行と$HOME/.zshenv1行目のコメントを外す
 # if type zprof > /dev/null 2>&1; then
